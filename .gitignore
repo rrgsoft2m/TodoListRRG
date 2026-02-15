@@ -13,6 +13,6 @@ build/
 coverage/
 .vscode/
 .idea/
-server/dev.db
-server/dev.db-journal
+server/prisma/dev.db
+server/prisma/dev.db-journal
 client/.next/
