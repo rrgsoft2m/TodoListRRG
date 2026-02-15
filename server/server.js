@@ -25,6 +25,25 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date() });
+});
+
+// Keep-alive mechanism for Render
+const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes
+const renderUrl = process.env.RENDER_EXTERNAL_URL;
+
+if (renderUrl) {
+    const https = require('https');
+    setInterval(() => {
+        https.get(renderUrl + '/health', (res) => {
+            console.log(`Keep-alive ping status: ${res.statusCode}`);
+        }).on('error', (e) => {
+            console.error(`Keep-alive ping error: ${e.message}`);
+        });
+    }, KEEP_ALIVE_INTERVAL);
+}
+
 // Server Start
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
