@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: todolist-api
+    plan: free # Optional, defaults to starter or free if available
+    env: node
+    rootDir: server
+    buildCommand: npm install && npx prisma generate
+    startCommand: npx prisma migrate deploy && node server.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: todolist-db
+          property: connectionString
+      - key: CLIENT_URL
+        value: "*" # Allow all origins for simplicity, or update later with frontend URL
+
+databases:
+  - name: todolist-db
+    databaseName: todolist
+    user: todolist_user
+    plan: free # Only available for early access or specific regions, otherwise starter. 
+               # Note: Render Free Tier Postgres is available but expires in 90 days.
